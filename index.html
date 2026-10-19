@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f766e">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<title>Delivery Guide</title>
+<style>
+:root{--bg:#f4f6f5;--card:#fff;--ink:#16211f;--mute:#5c6b68;--pri:#0f766e;--acc:#facc15;--bad:#dc2626;--line:#d9e0de;
+--t1:#2563eb;--t2:#16a34a;--t3:#ea580c;--t4:#9333ea;--t5:#db2777}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);-webkit-tap-highlight-color:transparent}
+header{background:var(--pri);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:5}
+header h1{font-size:18px;margin:0;flex:1}
+header button{background:rgba(255,255,255,.18);color:#fff;border:0;border-radius:8px;padding:8px 12px;font-size:14px}
+main{padding:16px;max-width:640px;margin:0 auto}
+.hide{display:none!important}
+.card{background:var(--card);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+h2{font-size:17px;margin:0 0 10px}
+label{display:block;font-size:13px;color:var(--mute);margin:10px 0 4px}
+select,input{width:100%;font-size:16px;padding:10px;border:1px solid var(--line);border-radius:8px;background:#fff}
+.btn{display:block;width:100%;border:0;border-radius:10px;padding:14px;font-size:16px;font-weight:600;background:var(--pri);color:#fff;margin-top:14px}
+.svgwrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:#fafcfb}
+.svgwrap svg{display:block;min-width:900px;height:auto}
+ol.steps{padding-left:22px;margin:0}ol.steps li{margin:0 0 10px;line-height:1.45}
+.warn{background:#fef2f2;color:var(--bad);border-radius:8px;padding:10px;font-size:14px;margin-top:10px}
+.legend{font-size:13px;color:var(--mute);columns:2;line-height:1.6}
+.small{font-size:13px;color:var(--mute)}
+/* Home */
+.choice{display:flex;gap:14px;align-items:center;text-align:left;width:100%;border:0;border-radius:16px;padding:20px;margin-bottom:14px;background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.1);font-size:15px;color:var(--ink)}
+.choice b{font-size:18px;display:block;margin-bottom:4px}
+.choice .ico{font-size:40px}
+/* Simple */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.big{border:0;border-radius:18px;color:#fff;font-size:34px;font-weight:800;padding:22px 8px;min-height:110px}
+.big small{display:block;font-size:15px;font-weight:600;opacity:.9}
+.big:disabled{background:#cbd5d1!important;color:#7a8783}
+.q{font-size:24px;font-weight:800;text-align:center;margin:6px 0 16px}
+.step{text-align:center}
+.step .emo{font-size:72px;line-height:1.1}
+.step .t{font-size:26px;font-weight:800;margin:8px 0 2px}
+.step .h{font-size:20px;color:var(--mute);margin-bottom:12px}
+.nav{display:flex;gap:12px;margin-top:14px}
+.nav button{flex:1;border:0;border-radius:14px;padding:18px;font-size:22px;font-weight:800}
+.dots{text-align:center;font-size:22px;letter-spacing:6px;color:#b5c2bf}.dots b{color:var(--pri)}
+.speak{background:var(--acc);border:0;border-radius:50px;padding:12px 22px;font-size:20px;font-weight:700}
+.ph{width:100%;border-radius:10px;margin-top:8px;display:block;aspect-ratio:4/3;object-fit:cover;cursor:zoom-in}
+.step .ph{margin:10px 0}
+#lb{position:fixed;inset:0;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;z-index:20}#lb img{max-width:100%;max-height:100%}
+.badge{display:inline-block;border-radius:8px;color:#fff;padding:4px 10px;font-weight:700}
+</style>
+</head>
+<body>
+<header><button id="homeBtn" class="hide" aria-label="Home">⌂</button><h1 id="title">Delivery Guide</h1><button id="switchBtn" class="hide">Switch</button></header>
+
+<main>
+<!-- HOME -->
+<section id="home">
+  <p class="small">Choose your app version</p>
+  <button class="choice" data-go="std"><span class="ico">📋</span><span><b>Standard</b>Full details: parking levels, written route, building map and elevation.</span></button>
+  <button class="choice" data-go="simple"><span class="ico">👆</span><span><b>Simple</b>Big buttons and pictures. One step at a time, with voice. सरल</span></button>
+</section>
+
+<!-- STANDARD -->
+<section id="std" class="hide">
+  <div class="card">
+    <h2>Delivery details</h2>
+    <label for="sTower">Tower</label>
+    <select id="sTower"></select>
+    <label for="sLevel">Parking level</label>
+    <select id="sLevel"></select>
+    <label for="sFlat">Flat number (optional)</label>
+    <input id="sFlat" inputmode="numeric" placeholder="e.g. 1204">
+    <div id="sWarn" class="warn hide"></div>
+    <button class="btn" id="sGo">Show route</button>
+  </div>
+  <div id="sOut" class="hide">
+    <div class="card"><h2>Route</h2><ol class="steps" id="sSteps"></ol></div>
+    <div class="card"><h2>Site plan</h2><div class="svgwrap" id="sMap"></div><p class="small">Scroll sideways to see the full plan. Red line = your route.</p></div>
+    <div class="card"><h2>Parking elevation</h2><div class="svgwrap" id="sElev"></div></div>
+  </div>
+  <div class="card"><h2>Parking access</h2>
+    <p class="small">Entry gate is at <b>P5 (ground)</b> on the 30 m DP Road (east). The driveway slopes UP from P5 through P4 and P3 to <b>P2</b>, which is at ground level at the <b>west exit</b>. P1 is one level above P2.<br>Towers 1 and 2: lifts reach <b>P1–P3</b> only. Towers 3, 4 and 5: lifts reach <b>P1–P5</b>.</p>
+  </div>
+  <div class="card"><h2>Amenity key</h2><div class="legend" id="legend"></div></div>
+</section>
+
+<!-- SIMPLE -->
+<section id="simple" class="hide">
+  <div id="q1"><div class="q">Which tower? <br><span class="small" style="font-size:18px">कौन सा टावर?</span></div><div class="grid" id="towerBtns"></div></div>
+  <div id="q2" class="hide"><div class="q">Which parking? <br><span class="small" style="font-size:18px">कौन सी पार्किंग?</span></div><div class="grid" id="levelBtns"></div>
+    <div class="nav"><button id="q2back" style="background:#e2e8e6">◀</button></div></div>
+  <div id="walk" class="hide">
+    <div class="card step">
+      <div class="dots" id="dots"></div>
+      <div class="emo" id="wEmo"></div>
+      <div class="t" id="wT"></div>
+      <div class="h" id="wH"></div>
+      <div id="wPh"></div>
+      <button class="speak" id="speak">🔊 Listen</button>
+    </div>
+    <div class="svgwrap" id="wMap"></div>
+    <div class="nav"><button id="prev" style="background:#e2e8e6">◀</button><button id="next" style="background:var(--pri);color:#fff">Next ▶</button></div>
+  </div>
+</section>
+</main>
+<div id="lb" class="hide"><img alt=""></div>
+
+<script>
+// ===== Building data (edit here) =====
+const TOWERS=[
+  {n:1,x:280,color:'var(--t1)',levels:['P1','P2','P3']},
+  {n:2,x:520,color:'var(--t2)',levels:['P1','P2','P3']},
+  {n:3,x:790,color:'var(--t3)',levels:['P1','P2','P3','P4','P5']},
+  {n:4,x:1075,color:'var(--t4)',levels:['P1','P2','P3','P4','P5']},
+  {n:5,x:1330,color:'var(--t5)',levels:['P1','P2','P3','P4','P5']},
+];
+const LEVELS=['P1','P2','P3','P4','P5']; // P5 = entry ground (east), slope up to P2 = exit ground (west), P1 above
+const AMEN=["1 Entrance plaza","2 Seating","3 Kids play","4 Pathway","5 Gazebo","6 Pool","7 Pool deck","8 Kids pool","9 Party lawn","10 Stage","11 Lawn","12 Yoga","13 Garden","14 Seating","15 Senior zone","16 Jogging","17–20 Lift lobbies","31–35 Sports courts"];
+// Photos: change a file name here to swap a photo. Missing ones are simply not shown.
+const PHOTOS={entrance:['img/entrance.jpg'],ramp:['img/ramptogotoallparkinglevels.jpg'],P1:['img/waytop1.jpg'],P2:['img/waytop2.jpg'],P3:['img/waytop3.jpg'],P4:['img/waytop4.jpg'],P5:['img/waytop5.jpg'],T1:['img/t1.jpg'],T2:['img/t2.jpg','img/t2_1.jpg'],T3:['img/t3.jpg'],T4:['img/t4.jpg'],T5:['img/t5.jpg'],exit:['img/rampexit.jpg','img/exit.jpg']};
+const TCOL=['#2563eb','#16a34a','#ea580c','#9333ea','#db2777'];
+
+// ===== Site plan SVG =====
+function mapSVG(t){
+  const T=t?TOWERS[t-1]:null;
+  let s=`<svg viewBox="0 0 1600 390" xmlns="http://www.w3.org/2000/svg" font-family="system-ui" role="img" aria-label="Site plan">
+  <rect width="1600" height="390" fill="#6b7370"/>
+  <rect x="120" y="0" width="1460" height="340" fill="#4caf50"/>
+  <path d="M150 28 H1440 V370 H1410 V70 H200 V180 H150 Z" fill="#c9ced0"/>
+  <text x="330" y="52" font-size="16" fill="#333">6 M DRIVEWAY</text><text x="1180" y="52" font-size="16" fill="#333">6 M DRIVEWAY</text>
+  ${[530,805,1070].map(x=>`<text x="${x}" y="52" font-size="13" fill="#333">RAMP ▾</text>`).join('')}
+  <rect x="180" y="72" width="1230" height="105" rx="10" fill="#f6e3a1"/>
+  <rect x="300" y="185" width="1110" height="100" rx="40" fill="#e8b96a" opacity=".55"/>
+  <rect x="330" y="292" width="1090" height="40" fill="#e9e1c9"/>
+  <rect x="1470" y="15" width="100" height="305" fill="#2a9d8f"/>
+  <text x="1520" y="170" font-size="14" fill="#fff" text-anchor="middle" transform="rotate(90 1520 170)">SPORTS 31–35</text>
+  <text x="760" y="372" font-size="20" fill="#fff" font-weight="700">30 M WIDE DP ROAD</text>
+  <text x="30" y="200" font-size="18" fill="#fff" font-weight="700" transform="rotate(90 30 200)">30 M DP ROAD</text>
+  <text x="125" y="150" font-size="15" fill="#fff" font-weight="700" text-anchor="end">EXIT ◀</text>
+  <text x="1500" y="384" font-size="15" fill="#fff" font-weight="700" text-anchor="middle">▲ ENTRANCE</text>`;
+  TOWERS.forEach((tw,i)=>{const on=T&&T.n===tw.n;
+    s+=`<rect x="${tw.x-100}" y="80" width="200" height="90" rx="8" fill="${on?TCOL[i]:'#f1d27a'}" stroke="${on?'#000':'#c9a94b'}" stroke-width="${on?4:1}"/>
+    <text x="${tw.x}" y="133" font-size="24" font-weight="800" text-anchor="middle" fill="${on?'#fff':'#5b4a12'}">TOWER ${tw.n}</text>`;});
+  [400,655,935,1205].forEach((x,i)=>s+=`<rect x="${x-14}" y="105" width="28" height="28" fill="#0f766e"/><text x="${x}" y="124" font-size="12" fill="#fff" text-anchor="middle">${20-i}</text>`);
+  if(T){s+=`<polyline points="1500,370 1425,340 1425,49 ${T.x},49 ${T.x},78" fill="none" stroke="#dc2626" stroke-width="9" stroke-linejoin="round" stroke-dasharray="18 10"/>
+    <circle cx="1500" cy="362" r="12" fill="#dc2626"/><polygon points="${T.x-14},62 ${T.x+14},62 ${T.x},84" fill="#dc2626"/>`;}
+  return s+'</svg>';
+}
+
+// ===== Elevation SVG =====
+function elevSVG(t,lv){
+  const W=900,top=30,h=50;let s=`<svg viewBox="0 0 ${W} 330" xmlns="http://www.w3.org/2000/svg" font-family="system-ui">`;
+  LEVELS.forEach((L,i)=>{const y=top+i*h,on=L===lv;
+    s+=`<rect x="90" y="${y}" width="${W-110}" height="${h-6}" fill="${on?'#fde68a':'#e5ebe9'}" stroke="#9aa8a4"/>
+    <text x="10" y="${y+29}" font-size="18" font-weight="700" fill="${on?'#b45309':'#333'}">${L}${L==='P5'?' 🚪':''}</text>`;});
+  // ground lines: P2 at east (right), P5 at west (left)
+  s+=`<line x1="90" y1="${top+h*2-3}" x2="${W-20}" y2="${top+h*5-3}" stroke="#7c5c2b" stroke-width="4"/>
+  <text x="95" y="${top+h*2+18}" font-size="13" fill="#7c5c2b">Ground at EXIT (west)</text>
+  <text x="${W-25}" y="${top+h*5+18}" font-size="13" text-anchor="end" fill="#7c5c2b">Ground at ENTRANCE (east)</text>`;
+  TOWERS.forEach((tw,i)=>{const x=120+i*150,n=tw.levels.length,on=t===tw.n;
+    s+=`<rect x="${x}" y="${top}" width="40" height="${n*h-6}" fill="${TCOL[i]}" opacity="${on?1:.35}" rx="4"/>
+    <text x="${x+20}" y="${top+n*h+10}" font-size="14" text-anchor="middle" font-weight="${on?800:400}">T${tw.n} lift</text>`;});
+  return s+'</svg>';
+}
+
+// ===== Route logic =====
+function route(t,lv,flat){
+  const tw=TOWERS[t-1],n=LEVELS.indexOf(lv),ok=tw.levels.includes(lv);
+  const s=[];
+  s.push({e:'🚪',t:'Enter gate',h:'गेट से अंदर आएं',p:PHOTOS.entrance,x:`Enter by the ENTRANCE gate on the 30 m DP Road (east side, next to the sports courts). You are now on P5, the ground level here.`});
+  if(n===4) s.push({e:'🅿️',p:PHOTOS.P5,t:'Stay on P5',h:'P5 पर रहें',x:'Stay on P5. Do not take any ramp.'});
+  else s.push({e:'⬆️',p:[...PHOTOS.ramp,...PHOTOS[lv]],t:`Go UP to ${lv}`,h:`ऊपर ${lv} पर जाएं`,x:`Follow the sloping driveway UP ${4-n} level${4-n>1?'s':''} to ${lv}${n===0?' (P1 is one level above the exit level P2)':''}.`});
+  s.push({e:'⬅️',t:`Drive to Tower ${t}`,h:`टावर ${t} तक जाएं`,x:`Drive west along the 6 m driveway until you reach Tower ${t}.`});
+  s.push({e:'🛗',p:PHOTOS['T'+t],t:`Park, take Tower ${t} lift`,h:`गाड़ी रोकें, टावर ${t} की लिफ्ट लें`,x:`Park near the Tower ${t} lift lobby and take the lift up${flat?` to flat ${flat} (floor ${String(flat).slice(0,-2)||'G'})`:''}.`});
+  s.push({e:'🏁',p:PHOTOS.exit,t:'Exit at P2 (west)',h:'बाहर: P2 पश्चिम गेट',x:'To leave: drive up the slope to P2 and exit by the west EXIT gate (P2 is at ground level there).'});
+  return {ok,steps:s,warn:ok?'':`Tower ${t} lift reaches only ${tw.levels.join(', ')}. Park on P3 or above.`};
+}
+
+// ===== Navigation =====
+const $=id=>document.getElementById(id);
+let mode='home';
+function show(m){mode=m;['home','std','simple'].forEach(x=>$(x).classList.toggle('hide',x!==m));
+  $('homeBtn').classList.toggle('hide',m==='home');$('switchBtn').classList.toggle('hide',m==='home');
+  $('title').textContent=m==='std'?'Delivery Guide · Standard':m==='simple'?'Delivery Guide · Simple':'Delivery Guide';
+  if(m==='simple')resetSimple();speechSynthesis&&speechSynthesis.cancel();}
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>show(b.dataset.go));
+$('homeBtn').onclick=()=>show('home');
+$('switchBtn').onclick=()=>show(mode==='std'?'simple':'std');
+
+// ===== Standard =====
+$('sTower').innerHTML=TOWERS.map(t=>`<option value="${t.n}">Tower ${t.n}</option>`).join('');
+function fillLevels(){const tw=TOWERS[$('sTower').value-1];
+  $('sLevel').innerHTML=LEVELS.map(L=>`<option ${tw.levels.includes(L)?'':'disabled'}>${L}${L==='P5'?' (entry, ground)':L==='P2'?' (exit, ground)':L==='P1'?' (above exit level)':''}${tw.levels.includes(L)?'':' – no lift'}</option>`).join('');}
+$('sTower').onchange=fillLevels;fillLevels();
+$('legend').innerHTML=AMEN.map(a=>`<div>${a}</div>`).join('');
+$('sMap').innerHTML=mapSVG(0);$('sOut').classList.remove('hide');$('sElev').innerHTML=elevSVG(0,'');
+$('sGo').onclick=()=>{const t=+$('sTower').value,lv=$('sLevel').value.slice(0,2),r=route(t,lv,$('sFlat').value.trim());
+  $('sWarn').textContent=r.warn;$('sWarn').classList.toggle('hide',r.ok);
+  $('sSteps').innerHTML=r.steps.map(s=>`<li>${s.x}</li>`).join('');
+  $('sMap').innerHTML=mapSVG(t);$('sElev').innerHTML=elevSVG(t,lv);
+  $('sSteps').scrollIntoView({behavior:'smooth',block:'center'});};
+
+// ===== Simple =====
+let sel={},steps=[],idx=0;
+$('towerBtns').innerHTML=TOWERS.map((t,i)=>`<button class="big" style="background:${TCOL[i]}" data-t="${t.n}"><small>TOWER</small>${t.n}</button>`).join('');
+$('towerBtns').onclick=e=>{const b=e.target.closest('[data-t]');if(!b)return;sel.t=+b.dataset.t;
+  const tw=TOWERS[sel.t-1];
+  $('levelBtns').innerHTML=LEVELS.map(L=>`<button class="big" style="background:#0f766e" data-l="${L}" ${tw.levels.includes(L)?'':'disabled'}>${L}<small>${!tw.levels.includes(L)?'✖ no lift':L==='P5'?'🚪 entry':'⬆ up'}</small></button>`).join('');
+  $('q1').classList.add('hide');$('q2').classList.remove('hide');};
+$('q2back').onclick=resetSimple;
+$('levelBtns').onclick=e=>{const b=e.target.closest('[data-l]');if(!b||b.disabled)return;
+  steps=route(sel.t,b.dataset.l).steps;idx=0;$('q2').classList.add('hide');$('walk').classList.remove('hide');
+  $('wMap').innerHTML=mapSVG(sel.t);renderStep();const w=$('wMap');w.scrollLeft=TOWERS[sel.t-1].x/1600*w.scrollWidth-w.clientWidth/2;};
+function renderStep(){const s=steps[idx];$('wEmo').textContent=s.e;$('wT').textContent=s.t;$('wH').textContent=s.h;$('wPh').innerHTML=(s.p||[]).map(u=>`<img class="ph" src="${u}" alt="">`).join('');
+  $('dots').innerHTML=steps.map((_,i)=>i===idx?'<b>●</b>':'●').join('');
+  $('prev').disabled=false;$('next').textContent=idx===steps.length-1?'✔ Done':'Next ▶';say();}
+function say(){if(!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(steps[idx].x);u.lang='en-IN';speechSynthesis.speak(u);}
+$('speak').onclick=say;
+$('next').onclick=()=>{if(idx<steps.length-1){idx++;renderStep();}else resetSimple();};
+$('prev').onclick=()=>{if(idx>0){idx--;renderStep();}else resetSimple();};
+function resetSimple(){$('q1').classList.remove('hide');$('q2').classList.add('hide');$('walk').classList.add('hide');speechSynthesis&&speechSynthesis.cancel();}
+
+document.addEventListener('click',e=>{if(e.target.classList.contains('ph')){$('lb').querySelector('img').src=e.target.src;$('lb').classList.remove('hide');}});
+$('lb').onclick=()=>$('lb').classList.add('hide');
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');
+</script>
+</body>
+</html>
